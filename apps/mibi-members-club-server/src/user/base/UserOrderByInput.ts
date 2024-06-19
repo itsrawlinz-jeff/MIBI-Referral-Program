@@ -72,6 +72,17 @@ class UserOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
+  isActive?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
   lastName?: SortOrder;
 
   @ApiProperty({
@@ -83,7 +94,29 @@ class UserOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
+  level?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
   password?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  referralCode?: SortOrder;
 
   @ApiProperty({
     required: false,

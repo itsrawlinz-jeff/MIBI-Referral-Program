@@ -11,8 +11,9 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString } from "class-validator";
+import { IsDate, IsString, IsOptional, IsEnum } from "class-validator";
 import { Type } from "class-transformer";
+import { EnumReferralStatus } from "./EnumReferralStatus";
 
 @ObjectType()
 class Referral {
@@ -31,6 +32,39 @@ class Referral {
   @IsString()
   @Field(() => String)
   id!: string;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  referee!: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  referrer!: string | null;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumReferralStatus,
+  })
+  @IsEnum(EnumReferralStatus)
+  @IsOptional()
+  @Field(() => EnumReferralStatus, {
+    nullable: true,
+  })
+  status?: "Option1" | null;
 
   @ApiProperty({
     required: true,

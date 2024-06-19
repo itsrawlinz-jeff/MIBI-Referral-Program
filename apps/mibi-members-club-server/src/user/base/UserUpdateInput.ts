@@ -11,13 +11,34 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional } from "class-validator";
+import { CommissionUpdateManyWithoutUsersInput } from "./CommissionUpdateManyWithoutUsersInput";
+import {
+  ValidateNested,
+  IsOptional,
+  IsString,
+  IsBoolean,
+  IsEnum,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { EnumUserLevel } from "./EnumUserLevel";
 import { IsJSONValue } from "../../validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { InputJsonValue } from "../../types";
 
 @InputType()
 class UserUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: () => CommissionUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => CommissionUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => CommissionUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  commissions?: CommissionUpdateManyWithoutUsersInput;
+
   @ApiProperty({
     required: false,
     type: String,
@@ -42,6 +63,17 @@ class UserUpdateInput {
 
   @ApiProperty({
     required: false,
+    type: Boolean,
+  })
+  @IsBoolean()
+  @IsOptional()
+  @Field(() => Boolean, {
+    nullable: true,
+  })
+  isActive?: boolean | null;
+
+  @ApiProperty({
+    required: false,
     type: String,
   })
   @IsString()
@@ -53,6 +85,17 @@ class UserUpdateInput {
 
   @ApiProperty({
     required: false,
+    enum: EnumUserLevel,
+  })
+  @IsEnum(EnumUserLevel)
+  @IsOptional()
+  @Field(() => EnumUserLevel, {
+    nullable: true,
+  })
+  level?: "Option1" | null;
+
+  @ApiProperty({
+    required: false,
     type: String,
   })
   @IsString()
@@ -61,6 +104,17 @@ class UserUpdateInput {
     nullable: true,
   })
   password?: string;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  referralCode?: string | null;
 
   @ApiProperty({
     required: false,

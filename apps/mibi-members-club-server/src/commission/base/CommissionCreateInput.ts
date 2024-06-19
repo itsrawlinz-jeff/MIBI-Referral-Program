@@ -9,5 +9,65 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-class CommissionCreateInput {}
+import { InputType, Field } from "@nestjs/graphql";
+import { ApiProperty } from "@nestjs/swagger";
+import {
+  IsNumber,
+  IsOptional,
+  IsInt,
+  IsEnum,
+  ValidateNested,
+} from "class-validator";
+import { EnumCommissionStatus } from "./EnumCommissionStatus";
+import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
+import { Type } from "class-transformer";
+
+@InputType()
+class CommissionCreateInput {
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  amount?: number | null;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsInt()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  level?: number | null;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumCommissionStatus,
+  })
+  @IsEnum(EnumCommissionStatus)
+  @IsOptional()
+  @Field(() => EnumCommissionStatus, {
+    nullable: true,
+  })
+  status?: "Option1" | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => UserWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => UserWhereUniqueInput)
+  @IsOptional()
+  @Field(() => UserWhereUniqueInput, {
+    nullable: true,
+  })
+  user?: UserWhereUniqueInput | null;
+}
+
 export { CommissionCreateInput as CommissionCreateInput };

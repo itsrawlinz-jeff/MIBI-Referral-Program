@@ -22,6 +22,9 @@ import { User } from "./User";
 import { UserFindManyArgs } from "./UserFindManyArgs";
 import { UserWhereUniqueInput } from "./UserWhereUniqueInput";
 import { UserUpdateInput } from "./UserUpdateInput";
+import { CommissionFindManyArgs } from "../../commission/base/CommissionFindManyArgs";
+import { Commission } from "../../commission/base/Commission";
+import { CommissionWhereUniqueInput } from "../../commission/base/CommissionWhereUniqueInput";
 
 export class UserControllerBase {
   constructor(protected readonly service: UserService) {}
@@ -35,7 +38,10 @@ export class UserControllerBase {
         email: true,
         firstName: true,
         id: true,
+        isActive: true,
         lastName: true,
+        level: true,
+        referralCode: true,
         roles: true,
         updatedAt: true,
         username: true,
@@ -55,7 +61,10 @@ export class UserControllerBase {
         email: true,
         firstName: true,
         id: true,
+        isActive: true,
         lastName: true,
+        level: true,
+        referralCode: true,
         roles: true,
         updatedAt: true,
         username: true,
@@ -76,7 +85,10 @@ export class UserControllerBase {
         email: true,
         firstName: true,
         id: true,
+        isActive: true,
         lastName: true,
+        level: true,
+        referralCode: true,
         roles: true,
         updatedAt: true,
         username: true,
@@ -106,7 +118,10 @@ export class UserControllerBase {
           email: true,
           firstName: true,
           id: true,
+          isActive: true,
           lastName: true,
+          level: true,
+          referralCode: true,
           roles: true,
           updatedAt: true,
           username: true,
@@ -136,7 +151,10 @@ export class UserControllerBase {
           email: true,
           firstName: true,
           id: true,
+          isActive: true,
           lastName: true,
+          level: true,
+          referralCode: true,
           roles: true,
           updatedAt: true,
           username: true,
@@ -150,5 +168,88 @@ export class UserControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.Get("/:id/commissions")
+  @ApiNestedQuery(CommissionFindManyArgs)
+  async findCommissions(
+    @common.Req() request: Request,
+    @common.Param() params: UserWhereUniqueInput
+  ): Promise<Commission[]> {
+    const query = plainToClass(CommissionFindManyArgs, request.query);
+    const results = await this.service.findCommissions(params.id, {
+      ...query,
+      select: {
+        amount: true,
+        createdAt: true,
+        id: true,
+        level: true,
+        status: true,
+        updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/commissions")
+  async connectCommissions(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: CommissionWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      commissions: {
+        connect: body,
+      },
+    };
+    await this.service.updateUser({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/commissions")
+  async updateCommissions(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: CommissionWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      commissions: {
+        set: body,
+      },
+    };
+    await this.service.updateUser({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/commissions")
+  async disconnectCommissions(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: CommissionWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      commissions: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateUser({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 }

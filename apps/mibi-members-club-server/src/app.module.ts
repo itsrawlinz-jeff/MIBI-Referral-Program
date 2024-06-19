@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { ReferralModule } from "./referral/referral.module";
 import { CommissionModule } from "./commission/commission.module";
+import { ReferralModule } from "./referral/referral.module";
 import { UserModule } from "./user/user.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
@@ -14,8 +14,8 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 @Module({
   controllers: [],
   imports: [
-    ReferralModule,
     CommissionModule,
+    ReferralModule,
     UserModule,
     HealthModule,
     PrismaModule,

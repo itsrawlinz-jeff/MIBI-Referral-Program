@@ -18,25 +18,33 @@ import { CommissionService } from "../commission.service";
 const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
+  amount: 42.42,
   createdAt: new Date(),
   id: "exampleId",
+  level: 42,
   updatedAt: new Date(),
 };
 const CREATE_RESULT = {
+  amount: 42.42,
   createdAt: new Date(),
   id: "exampleId",
+  level: 42,
   updatedAt: new Date(),
 };
 const FIND_MANY_RESULT = [
   {
+    amount: 42.42,
     createdAt: new Date(),
     id: "exampleId",
+    level: 42,
     updatedAt: new Date(),
   },
 ];
 const FIND_ONE_RESULT = {
+  amount: 42.42,
   createdAt: new Date(),
   id: "exampleId",
+  level: 42,
   updatedAt: new Date(),
 };
 

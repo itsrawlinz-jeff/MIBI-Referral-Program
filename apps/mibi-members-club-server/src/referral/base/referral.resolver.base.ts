@@ -17,6 +17,8 @@ import { Referral } from "./Referral";
 import { ReferralCountArgs } from "./ReferralCountArgs";
 import { ReferralFindManyArgs } from "./ReferralFindManyArgs";
 import { ReferralFindUniqueArgs } from "./ReferralFindUniqueArgs";
+import { CreateReferralArgs } from "./CreateReferralArgs";
+import { UpdateReferralArgs } from "./UpdateReferralArgs";
 import { DeleteReferralArgs } from "./DeleteReferralArgs";
 import { ReferralService } from "../referral.service";
 @graphql.Resolver(() => Referral)
@@ -48,6 +50,35 @@ export class ReferralResolverBase {
       return null;
     }
     return result;
+  }
+
+  @graphql.Mutation(() => Referral)
+  async createReferral(
+    @graphql.Args() args: CreateReferralArgs
+  ): Promise<Referral> {
+    return await this.service.createReferral({
+      ...args,
+      data: args.data,
+    });
+  }
+
+  @graphql.Mutation(() => Referral)
+  async updateReferral(
+    @graphql.Args() args: UpdateReferralArgs
+  ): Promise<Referral | null> {
+    try {
+      return await this.service.updateReferral({
+        ...args,
+        data: args.data,
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
   }
 
   @graphql.Mutation(() => Referral)

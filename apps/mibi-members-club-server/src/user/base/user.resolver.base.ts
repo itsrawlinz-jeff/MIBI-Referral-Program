@@ -20,6 +20,8 @@ import { UserFindUniqueArgs } from "./UserFindUniqueArgs";
 import { CreateUserArgs } from "./CreateUserArgs";
 import { UpdateUserArgs } from "./UpdateUserArgs";
 import { DeleteUserArgs } from "./DeleteUserArgs";
+import { CommissionFindManyArgs } from "../../commission/base/CommissionFindManyArgs";
+import { Commission } from "../../commission/base/Commission";
 import { UserService } from "../user.service";
 @graphql.Resolver(() => User)
 export class UserResolverBase {
@@ -85,5 +87,19 @@ export class UserResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => [Commission], { name: "commissions" })
+  async findCommissions(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: CommissionFindManyArgs
+  ): Promise<Commission[]> {
+    const results = await this.service.findCommissions(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
   }
 }

@@ -11,11 +11,32 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString } from "class-validator";
+import {
+  IsNumber,
+  IsOptional,
+  IsDate,
+  IsString,
+  IsInt,
+  IsEnum,
+  ValidateNested,
+} from "class-validator";
 import { Type } from "class-transformer";
+import { EnumCommissionStatus } from "./EnumCommissionStatus";
+import { User } from "../../user/base/User";
 
 @ObjectType()
 class Commission {
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  amount!: number | null;
+
   @ApiProperty({
     required: true,
   })
@@ -33,12 +54,43 @@ class Commission {
   id!: string;
 
   @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsInt()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  level!: number | null;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumCommissionStatus,
+  })
+  @IsEnum(EnumCommissionStatus)
+  @IsOptional()
+  @Field(() => EnumCommissionStatus, {
+    nullable: true,
+  })
+  status?: "Option1" | null;
+
+  @ApiProperty({
     required: true,
   })
   @IsDate()
   @Type(() => Date)
   @Field(() => Date)
   updatedAt!: Date;
+
+  @ApiProperty({
+    required: false,
+    type: () => User,
+  })
+  @ValidateNested()
+  @Type(() => User)
+  @IsOptional()
+  user?: User | null;
 }
 
 export { Commission as Commission };

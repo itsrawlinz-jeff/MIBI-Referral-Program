@@ -35,6 +35,9 @@ export class ReferralControllerBase {
       select: {
         createdAt: true,
         id: true,
+        referee: true,
+        referrer: true,
+        status: true,
         updatedAt: true,
       },
     });
@@ -50,6 +53,9 @@ export class ReferralControllerBase {
       select: {
         createdAt: true,
         id: true,
+        referee: true,
+        referrer: true,
+        status: true,
         updatedAt: true,
       },
     });
@@ -66,6 +72,9 @@ export class ReferralControllerBase {
       select: {
         createdAt: true,
         id: true,
+        referee: true,
+        referrer: true,
+        status: true,
         updatedAt: true,
       },
     });
@@ -91,6 +100,9 @@ export class ReferralControllerBase {
         select: {
           createdAt: true,
           id: true,
+          referee: true,
+          referrer: true,
+          status: true,
           updatedAt: true,
         },
       });
@@ -116,6 +128,9 @@ export class ReferralControllerBase {
         select: {
           createdAt: true,
           id: true,
+          referee: true,
+          referrer: true,
+          status: true,
           updatedAt: true,
         },
       });

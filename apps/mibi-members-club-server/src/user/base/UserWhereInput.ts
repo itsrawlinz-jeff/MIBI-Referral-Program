@@ -11,13 +11,28 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { StringNullableFilter } from "../../util/StringNullableFilter";
+import { CommissionListRelationFilter } from "../../commission/base/CommissionListRelationFilter";
+import { ValidateNested, IsOptional, IsEnum } from "class-validator";
 import { Type } from "class-transformer";
-import { IsOptional } from "class-validator";
+import { StringNullableFilter } from "../../util/StringNullableFilter";
 import { StringFilter } from "../../util/StringFilter";
+import { BooleanNullableFilter } from "../../util/BooleanNullableFilter";
+import { EnumUserLevel } from "./EnumUserLevel";
 
 @InputType()
 class UserWhereInput {
+  @ApiProperty({
+    required: false,
+    type: () => CommissionListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => CommissionListRelationFilter)
+  @IsOptional()
+  @Field(() => CommissionListRelationFilter, {
+    nullable: true,
+  })
+  commissions?: CommissionListRelationFilter;
+
   @ApiProperty({
     required: false,
     type: StringNullableFilter,
@@ -53,6 +68,17 @@ class UserWhereInput {
 
   @ApiProperty({
     required: false,
+    type: BooleanNullableFilter,
+  })
+  @Type(() => BooleanNullableFilter)
+  @IsOptional()
+  @Field(() => BooleanNullableFilter, {
+    nullable: true,
+  })
+  isActive?: BooleanNullableFilter;
+
+  @ApiProperty({
+    required: false,
     type: StringNullableFilter,
   })
   @Type(() => StringNullableFilter)
@@ -61,6 +87,28 @@ class UserWhereInput {
     nullable: true,
   })
   lastName?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumUserLevel,
+  })
+  @IsEnum(EnumUserLevel)
+  @IsOptional()
+  @Field(() => EnumUserLevel, {
+    nullable: true,
+  })
+  level?: "Option1";
+
+  @ApiProperty({
+    required: false,
+    type: StringNullableFilter,
+  })
+  @Type(() => StringNullableFilter)
+  @IsOptional()
+  @Field(() => StringNullableFilter, {
+    nullable: true,
+  })
+  referralCode?: StringNullableFilter;
 
   @ApiProperty({
     required: false,

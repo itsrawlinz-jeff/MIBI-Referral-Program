@@ -14,6 +14,9 @@ export const ReferralList = (props: ListProps): React.ReactElement => {
       <Datagrid rowClick="show">
         <DateField source="createdAt" label="Created At" />
         <TextField label="ID" source="id" />
+        <TextField label="referee" source="referee" />
+        <TextField label="referrer" source="referrer" />
+        <TextField label="status" source="status" />
         <DateField source="updatedAt" label="Updated At" />
       </Datagrid>
     </List>

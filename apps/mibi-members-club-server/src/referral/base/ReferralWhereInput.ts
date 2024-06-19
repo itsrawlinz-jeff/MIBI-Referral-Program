@@ -13,7 +13,9 @@ import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { StringFilter } from "../../util/StringFilter";
 import { Type } from "class-transformer";
-import { IsOptional } from "class-validator";
+import { IsOptional, IsEnum } from "class-validator";
+import { StringNullableFilter } from "../../util/StringNullableFilter";
+import { EnumReferralStatus } from "./EnumReferralStatus";
 
 @InputType()
 class ReferralWhereInput {
@@ -27,6 +29,39 @@ class ReferralWhereInput {
     nullable: true,
   })
   id?: StringFilter;
+
+  @ApiProperty({
+    required: false,
+    type: StringNullableFilter,
+  })
+  @Type(() => StringNullableFilter)
+  @IsOptional()
+  @Field(() => StringNullableFilter, {
+    nullable: true,
+  })
+  referee?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: StringNullableFilter,
+  })
+  @Type(() => StringNullableFilter)
+  @IsOptional()
+  @Field(() => StringNullableFilter, {
+    nullable: true,
+  })
+  referrer?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumReferralStatus,
+  })
+  @IsEnum(EnumReferralStatus)
+  @IsOptional()
+  @Field(() => EnumReferralStatus, {
+    nullable: true,
+  })
+  status?: "Option1";
 }
 
 export { ReferralWhereInput as ReferralWhereInput };

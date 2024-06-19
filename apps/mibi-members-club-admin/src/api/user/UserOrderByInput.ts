@@ -5,8 +5,11 @@ export type UserOrderByInput = {
   email?: SortOrder;
   firstName?: SortOrder;
   id?: SortOrder;
+  isActive?: SortOrder;
   lastName?: SortOrder;
+  level?: SortOrder;
   password?: SortOrder;
+  referralCode?: SortOrder;
   roles?: SortOrder;
   updatedAt?: SortOrder;
   username?: SortOrder;

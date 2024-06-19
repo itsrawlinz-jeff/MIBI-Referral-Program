@@ -5,14 +5,14 @@ import { theme } from "./theme/theme";
 import Login from "./Login";
 import "./App.scss";
 import Dashboard from "./pages/Dashboard";
-import { ReferralList } from "./referral/ReferralList";
-import { ReferralCreate } from "./referral/ReferralCreate";
-import { ReferralEdit } from "./referral/ReferralEdit";
-import { ReferralShow } from "./referral/ReferralShow";
 import { CommissionList } from "./commission/CommissionList";
 import { CommissionCreate } from "./commission/CommissionCreate";
 import { CommissionEdit } from "./commission/CommissionEdit";
 import { CommissionShow } from "./commission/CommissionShow";
+import { ReferralList } from "./referral/ReferralList";
+import { ReferralCreate } from "./referral/ReferralCreate";
+import { ReferralEdit } from "./referral/ReferralEdit";
+import { ReferralShow } from "./referral/ReferralShow";
 import { UserList } from "./user/UserList";
 import { UserCreate } from "./user/UserCreate";
 import { UserEdit } from "./user/UserEdit";
@@ -44,18 +44,18 @@ const App = (): React.ReactElement => {
         loginPage={Login}
       >
         <Resource
-          name="Referral"
-          list={ReferralList}
-          edit={ReferralEdit}
-          create={ReferralCreate}
-          show={ReferralShow}
-        />
-        <Resource
           name="Commission"
           list={CommissionList}
           edit={CommissionEdit}
           create={CommissionCreate}
           show={CommissionShow}
+        />
+        <Resource
+          name="Referral"
+          list={ReferralList}
+          edit={ReferralEdit}
+          create={ReferralCreate}
+          show={ReferralShow}
         />
         <Resource
           name="User"

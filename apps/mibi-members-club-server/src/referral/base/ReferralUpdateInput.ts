@@ -9,5 +9,45 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-class ReferralUpdateInput {}
+import { InputType, Field } from "@nestjs/graphql";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsString, IsOptional, IsEnum } from "class-validator";
+import { EnumReferralStatus } from "./EnumReferralStatus";
+
+@InputType()
+class ReferralUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  referee?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  referrer?: string | null;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumReferralStatus,
+  })
+  @IsEnum(EnumReferralStatus)
+  @IsOptional()
+  @Field(() => EnumReferralStatus, {
+    nullable: true,
+  })
+  status?: "Option1" | null;
+}
+
 export { ReferralUpdateInput as ReferralUpdateInput };

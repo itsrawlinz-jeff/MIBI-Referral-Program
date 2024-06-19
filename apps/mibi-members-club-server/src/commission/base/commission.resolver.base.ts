@@ -17,7 +17,10 @@ import { Commission } from "./Commission";
 import { CommissionCountArgs } from "./CommissionCountArgs";
 import { CommissionFindManyArgs } from "./CommissionFindManyArgs";
 import { CommissionFindUniqueArgs } from "./CommissionFindUniqueArgs";
+import { CreateCommissionArgs } from "./CreateCommissionArgs";
+import { UpdateCommissionArgs } from "./UpdateCommissionArgs";
 import { DeleteCommissionArgs } from "./DeleteCommissionArgs";
+import { User } from "../../user/base/User";
 import { CommissionService } from "../commission.service";
 @graphql.Resolver(() => Commission)
 export class CommissionResolverBase {
@@ -51,6 +54,51 @@ export class CommissionResolverBase {
   }
 
   @graphql.Mutation(() => Commission)
+  async createCommission(
+    @graphql.Args() args: CreateCommissionArgs
+  ): Promise<Commission> {
+    return await this.service.createCommission({
+      ...args,
+      data: {
+        ...args.data,
+
+        user: args.data.user
+          ? {
+              connect: args.data.user,
+            }
+          : undefined,
+      },
+    });
+  }
+
+  @graphql.Mutation(() => Commission)
+  async updateCommission(
+    @graphql.Args() args: UpdateCommissionArgs
+  ): Promise<Commission | null> {
+    try {
+      return await this.service.updateCommission({
+        ...args,
+        data: {
+          ...args.data,
+
+          user: args.data.user
+            ? {
+                connect: args.data.user,
+              }
+            : undefined,
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @graphql.Mutation(() => Commission)
   async deleteCommission(
     @graphql.Args() args: DeleteCommissionArgs
   ): Promise<Commission | null> {
@@ -64,5 +112,18 @@ export class CommissionResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => User, {
+    nullable: true,
+    name: "user",
+  })
+  async getUser(@graphql.Parent() parent: Commission): Promise<User | null> {
+    const result = await this.service.getUser(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
   }
 }

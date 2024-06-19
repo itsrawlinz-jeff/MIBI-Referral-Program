@@ -31,11 +31,28 @@ export class CommissionControllerBase {
     @common.Body() data: CommissionCreateInput
   ): Promise<Commission> {
     return await this.service.createCommission({
-      data: data,
+      data: {
+        ...data,
+
+        user: data.user
+          ? {
+              connect: data.user,
+            }
+          : undefined,
+      },
       select: {
+        amount: true,
         createdAt: true,
         id: true,
+        level: true,
+        status: true,
         updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
   }
@@ -48,9 +65,18 @@ export class CommissionControllerBase {
     return this.service.commissions({
       ...args,
       select: {
+        amount: true,
         createdAt: true,
         id: true,
+        level: true,
+        status: true,
         updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
   }
@@ -64,9 +90,18 @@ export class CommissionControllerBase {
     const result = await this.service.commission({
       where: params,
       select: {
+        amount: true,
         createdAt: true,
         id: true,
+        level: true,
+        status: true,
         updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
     if (result === null) {
@@ -87,11 +122,28 @@ export class CommissionControllerBase {
     try {
       return await this.service.updateCommission({
         where: params,
-        data: data,
+        data: {
+          ...data,
+
+          user: data.user
+            ? {
+                connect: data.user,
+              }
+            : undefined,
+        },
         select: {
+          amount: true,
           createdAt: true,
           id: true,
+          level: true,
+          status: true,
           updatedAt: true,
+
+          user: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
     } catch (error) {
@@ -114,9 +166,18 @@ export class CommissionControllerBase {
       return await this.service.deleteCommission({
         where: params,
         select: {
+          amount: true,
           createdAt: true,
           id: true,
+          level: true,
+          status: true,
           updatedAt: true,
+
+          user: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
     } catch (error) {
