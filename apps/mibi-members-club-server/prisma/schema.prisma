@@ -19,12 +19,15 @@ model Commission {
 }
 
 model Referral {
-  createdAt DateTime            @default(now())
-  id        String              @id @default(cuid())
-  referee   String?
-  referrer  String?
-  status    EnumReferralStatus?
-  updatedAt DateTime            @updatedAt
+  adminEmail String?
+  createdAt  DateTime            @default(now())
+  id         String              @id @default(cuid())
+  referee    String?
+  referrer   String?
+  siteLogo   Json?
+  siteName   String?
+  status     EnumReferralStatus?
+  updatedAt  DateTime            @updatedAt
 }
 
 model User {

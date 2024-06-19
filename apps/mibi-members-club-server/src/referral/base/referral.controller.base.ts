@@ -16,64 +16,109 @@ import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
+import * as nestAccessControl from "nest-access-control";
+import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
 import { ReferralService } from "../referral.service";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
+import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { ReferralCreateInput } from "./ReferralCreateInput";
 import { Referral } from "./Referral";
 import { ReferralFindManyArgs } from "./ReferralFindManyArgs";
 import { ReferralWhereUniqueInput } from "./ReferralWhereUniqueInput";
 import { ReferralUpdateInput } from "./ReferralUpdateInput";
 
+@swagger.ApiBearerAuth()
+@common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
 export class ReferralControllerBase {
-  constructor(protected readonly service: ReferralService) {}
+  constructor(
+    protected readonly service: ReferralService,
+    protected readonly rolesBuilder: nestAccessControl.RolesBuilder
+  ) {}
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Referral })
+  @nestAccessControl.UseRoles({
+    resource: "Referral",
+    action: "create",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async createReferral(
     @common.Body() data: ReferralCreateInput
   ): Promise<Referral> {
     return await this.service.createReferral({
       data: data,
       select: {
+        adminEmail: true,
         createdAt: true,
         id: true,
         referee: true,
         referrer: true,
+        siteLogo: true,
+        siteName: true,
         status: true,
         updatedAt: true,
       },
     });
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get()
   @swagger.ApiOkResponse({ type: [Referral] })
   @ApiNestedQuery(ReferralFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Referral",
+    action: "read",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async referrals(@common.Req() request: Request): Promise<Referral[]> {
     const args = plainToClass(ReferralFindManyArgs, request.query);
     return this.service.referrals({
       ...args,
       select: {
+        adminEmail: true,
         createdAt: true,
         id: true,
         referee: true,
         referrer: true,
+        siteLogo: true,
+        siteName: true,
         status: true,
         updatedAt: true,
       },
     });
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get("/:id")
   @swagger.ApiOkResponse({ type: Referral })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Referral",
+    action: "read",
+    possession: "own",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async referral(
     @common.Param() params: ReferralWhereUniqueInput
   ): Promise<Referral | null> {
     const result = await this.service.referral({
       where: params,
       select: {
+        adminEmail: true,
         createdAt: true,
         id: true,
         referee: true,
         referrer: true,
+        siteLogo: true,
+        siteName: true,
         status: true,
         updatedAt: true,
       },
@@ -86,9 +131,18 @@ export class ReferralControllerBase {
     return result;
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Referral })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Referral",
+    action: "update",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async updateReferral(
     @common.Param() params: ReferralWhereUniqueInput,
     @common.Body() data: ReferralUpdateInput
@@ -98,10 +152,13 @@ export class ReferralControllerBase {
         where: params,
         data: data,
         select: {
+          adminEmail: true,
           createdAt: true,
           id: true,
           referee: true,
           referrer: true,
+          siteLogo: true,
+          siteName: true,
           status: true,
           updatedAt: true,
         },
@@ -119,6 +176,14 @@ export class ReferralControllerBase {
   @common.Delete("/:id")
   @swagger.ApiOkResponse({ type: Referral })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Referral",
+    action: "delete",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async deleteReferral(
     @common.Param() params: ReferralWhereUniqueInput
   ): Promise<Referral | null> {
@@ -126,10 +191,13 @@ export class ReferralControllerBase {
       return await this.service.deleteReferral({
         where: params,
         select: {
+          adminEmail: true,
           createdAt: true,
           id: true,
           referee: true,
           referrer: true,
+          siteLogo: true,
+          siteName: true,
           status: true,
           updatedAt: true,
         },

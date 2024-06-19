@@ -11,8 +11,11 @@ export const ReferralCreate = (props: CreateProps): React.ReactElement => {
   return (
     <Create {...props}>
       <SimpleForm>
+        <TextInput label="adminEmail" source="adminEmail" type="email" />
         <TextInput label="referee" source="referee" />
         <TextInput label="referrer" source="referrer" />
+        <div />
+        <TextInput label="siteName" source="siteName" />
         <SelectInput
           source="status"
           label="status"

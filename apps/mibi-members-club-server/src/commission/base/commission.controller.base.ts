@@ -16,17 +16,35 @@ import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
+import * as nestAccessControl from "nest-access-control";
+import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
 import { CommissionService } from "../commission.service";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
+import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { CommissionCreateInput } from "./CommissionCreateInput";
 import { Commission } from "./Commission";
 import { CommissionFindManyArgs } from "./CommissionFindManyArgs";
 import { CommissionWhereUniqueInput } from "./CommissionWhereUniqueInput";
 import { CommissionUpdateInput } from "./CommissionUpdateInput";
 
+@swagger.ApiBearerAuth()
+@common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
 export class CommissionControllerBase {
-  constructor(protected readonly service: CommissionService) {}
+  constructor(
+    protected readonly service: CommissionService,
+    protected readonly rolesBuilder: nestAccessControl.RolesBuilder
+  ) {}
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Commission })
+  @nestAccessControl.UseRoles({
+    resource: "Commission",
+    action: "create",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async createCommission(
     @common.Body() data: CommissionCreateInput
   ): Promise<Commission> {
@@ -57,9 +75,18 @@ export class CommissionControllerBase {
     });
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get()
   @swagger.ApiOkResponse({ type: [Commission] })
   @ApiNestedQuery(CommissionFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Commission",
+    action: "read",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async commissions(@common.Req() request: Request): Promise<Commission[]> {
     const args = plainToClass(CommissionFindManyArgs, request.query);
     return this.service.commissions({
@@ -81,9 +108,18 @@ export class CommissionControllerBase {
     });
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get("/:id")
   @swagger.ApiOkResponse({ type: Commission })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Commission",
+    action: "read",
+    possession: "own",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async commission(
     @common.Param() params: CommissionWhereUniqueInput
   ): Promise<Commission | null> {
@@ -112,9 +148,18 @@ export class CommissionControllerBase {
     return result;
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Commission })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Commission",
+    action: "update",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async updateCommission(
     @common.Param() params: CommissionWhereUniqueInput,
     @common.Body() data: CommissionUpdateInput
@@ -159,6 +204,14 @@ export class CommissionControllerBase {
   @common.Delete("/:id")
   @swagger.ApiOkResponse({ type: Commission })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Commission",
+    action: "delete",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async deleteCommission(
     @common.Param() params: CommissionWhereUniqueInput
   ): Promise<Commission | null> {

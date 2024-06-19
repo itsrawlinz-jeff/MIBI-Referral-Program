@@ -13,6 +13,12 @@ import * as graphql from "@nestjs/graphql";
 import { GraphQLError } from "graphql";
 import { isRecordNotFoundError } from "../../prisma.util";
 import { MetaQueryPayload } from "../../util/MetaQueryPayload";
+import * as nestAccessControl from "nest-access-control";
+import * as gqlACGuard from "../../auth/gqlAC.guard";
+import { GqlDefaultAuthGuard } from "../../auth/gqlDefaultAuth.guard";
+import * as common from "@nestjs/common";
+import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 import { Referral } from "./Referral";
 import { ReferralCountArgs } from "./ReferralCountArgs";
 import { ReferralFindManyArgs } from "./ReferralFindManyArgs";
@@ -21,10 +27,20 @@ import { CreateReferralArgs } from "./CreateReferralArgs";
 import { UpdateReferralArgs } from "./UpdateReferralArgs";
 import { DeleteReferralArgs } from "./DeleteReferralArgs";
 import { ReferralService } from "../referral.service";
+@common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => Referral)
 export class ReferralResolverBase {
-  constructor(protected readonly service: ReferralService) {}
+  constructor(
+    protected readonly service: ReferralService,
+    protected readonly rolesBuilder: nestAccessControl.RolesBuilder
+  ) {}
 
+  @graphql.Query(() => MetaQueryPayload)
+  @nestAccessControl.UseRoles({
+    resource: "Referral",
+    action: "read",
+    possession: "any",
+  })
   async _referralsMeta(
     @graphql.Args() args: ReferralCountArgs
   ): Promise<MetaQueryPayload> {
@@ -34,14 +50,26 @@ export class ReferralResolverBase {
     };
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @graphql.Query(() => [Referral])
+  @nestAccessControl.UseRoles({
+    resource: "Referral",
+    action: "read",
+    possession: "any",
+  })
   async referrals(
     @graphql.Args() args: ReferralFindManyArgs
   ): Promise<Referral[]> {
     return this.service.referrals(args);
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @graphql.Query(() => Referral, { nullable: true })
+  @nestAccessControl.UseRoles({
+    resource: "Referral",
+    action: "read",
+    possession: "own",
+  })
   async referral(
     @graphql.Args() args: ReferralFindUniqueArgs
   ): Promise<Referral | null> {
@@ -52,7 +80,13 @@ export class ReferralResolverBase {
     return result;
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @graphql.Mutation(() => Referral)
+  @nestAccessControl.UseRoles({
+    resource: "Referral",
+    action: "create",
+    possession: "any",
+  })
   async createReferral(
     @graphql.Args() args: CreateReferralArgs
   ): Promise<Referral> {
@@ -62,7 +96,13 @@ export class ReferralResolverBase {
     });
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @graphql.Mutation(() => Referral)
+  @nestAccessControl.UseRoles({
+    resource: "Referral",
+    action: "update",
+    possession: "any",
+  })
   async updateReferral(
     @graphql.Args() args: UpdateReferralArgs
   ): Promise<Referral | null> {
@@ -82,6 +122,11 @@ export class ReferralResolverBase {
   }
 
   @graphql.Mutation(() => Referral)
+  @nestAccessControl.UseRoles({
+    resource: "Referral",
+    action: "delete",
+    possession: "any",
+  })
   async deleteReferral(
     @graphql.Args() args: DeleteReferralArgs
   ): Promise<Referral | null> {

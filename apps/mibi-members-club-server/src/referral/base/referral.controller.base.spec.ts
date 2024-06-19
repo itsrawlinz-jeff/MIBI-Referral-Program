@@ -18,33 +18,41 @@ import { ReferralService } from "../referral.service";
 const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
+  adminEmail: "exampleAdminEmail",
   createdAt: new Date(),
   id: "exampleId",
   referee: "exampleReferee",
   referrer: "exampleReferrer",
+  siteName: "exampleSiteName",
   updatedAt: new Date(),
 };
 const CREATE_RESULT = {
+  adminEmail: "exampleAdminEmail",
   createdAt: new Date(),
   id: "exampleId",
   referee: "exampleReferee",
   referrer: "exampleReferrer",
+  siteName: "exampleSiteName",
   updatedAt: new Date(),
 };
 const FIND_MANY_RESULT = [
   {
+    adminEmail: "exampleAdminEmail",
     createdAt: new Date(),
     id: "exampleId",
     referee: "exampleReferee",
     referrer: "exampleReferrer",
+    siteName: "exampleSiteName",
     updatedAt: new Date(),
   },
 ];
 const FIND_ONE_RESULT = {
+  adminEmail: "exampleAdminEmail",
   createdAt: new Date(),
   id: "exampleId",
   referee: "exampleReferee",
   referrer: "exampleReferrer",
+  siteName: "exampleSiteName",
   updatedAt: new Date(),
 };
 
