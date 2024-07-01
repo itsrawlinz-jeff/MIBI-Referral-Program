@@ -1,0 +1,59 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Commission {
+  amount    Float?
+  createdAt DateTime              @default(now())
+  id        String                @id @default(cuid())
+  level     Int?
+  status    EnumCommissionStatus?
+  updatedAt DateTime              @updatedAt
+  user      User?                 @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
+model Referral {
+  adminEmail String?
+  createdAt  DateTime            @default(now())
+  id         String              @id @default(cuid())
+  referee    String?
+  referrer   String?
+  siteLogo   Json?
+  siteName   String?
+  status     EnumReferralStatus?
+  updatedAt  DateTime            @updatedAt
+}
+
+model User {
+  commissions  Commission[]
+  createdAt    DateTime       @default(now())
+  email        String?        @unique
+  firstName    String?
+  id           String         @id @default(cuid())
+  isActive     Boolean?
+  lastName     String?
+  level        EnumUserLevel?
+  password     String
+  referralCode String?
+  roles        Json
+  updatedAt    DateTime       @updatedAt
+  username     String         @unique
+}
+
+enum EnumCommissionStatus {
+  Option1
+}
+
+enum EnumReferralStatus {
+  Option1
+}
+
+enum EnumUserLevel {
+  Option1
+}
